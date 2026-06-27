@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APA — Agentic CI Failure Diagnosis</title>
+<style>
+  :root{
+    --bg:#0f1220; --panel:#181c2e; --ink:#e8ecf6; --muted:#9aa4c0; --line:#2a3050;
+    --code:#7aa2ff; --config:#f5a35c; --quality:#c08bff; --dep:#5ad1a0; --transient:#7f8aa8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:16px/1.55 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:1080px;margin:0 auto;padding:40px 28px 64px}
+  h1{font-size:30px;margin:0 0 4px;letter-spacing:.2px}
+  .sub{color:var(--muted);margin:0 0 8px}
+  .pill{display:inline-block;font-size:12px;color:var(--muted);border:1px solid var(--line);
+        border-radius:999px;padding:3px 10px;margin-right:6px}
+  h2{font-size:20px;margin:40px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  /* diversity grid */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px}
+  .repo{font-family:ui-monospace,Consolas,monospace;font-size:13px;color:var(--muted);margin-bottom:10px}
+  .cat{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .badge{font-weight:700;font-size:13px;padding:4px 10px;border-radius:8px;color:#0f1220}
+  .b-code{background:var(--code)} .b-config{background:var(--config)}
+  .b-quality{background:var(--quality)} .b-dep{background:var(--dep)}
+  .conf{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+  .fix{font-size:14px;color:var(--ink)}
+  .fix b{color:#fff}
+  .tools{margin-top:10px;font-size:12px;color:var(--muted)}
+  .tools code{background:#10142a;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:#cdd6f4}
+  /* trace timeline */
+  .trace{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 6px}
+  .row{display:grid;grid-template-columns:150px 1fr 120px;gap:14px;align-items:center;
+       padding:12px 16px;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .stage{font-weight:600;font-size:13px}
+  .stage small{display:block;color:var(--muted);font-weight:400}
+  .detail{font-size:14px;color:var(--muted)}
+  .detail code{color:#cdd6f4}
+  .belief{justify-self:end;text-align:right;font-variant-numeric:tabular-nums}
+  .bar{height:8px;border-radius:5px;background:#10142a;border:1px solid var(--line);overflow:hidden;margin-top:4px;width:110px}
+  .bar > i{display:block;height:100%}
+  .top{font-size:12px;color:var(--muted)}
+  .win .stage{color:var(--config)}
+  .foot{margin-top:34px;color:var(--muted);font-size:13px}
+  .foot a{color:var(--code);text-decoration:none}
+  .kpis{display:flex;gap:22px;flex-wrap:wrap;margin:6px 0 0}
+  .kpi b{color:#fff;font-size:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>APA — Agentic CI Failure Diagnosis</h1>
+  <p class="sub">One failed CI run in &rarr; failure category, confidence, and a concrete fix out.</p>
+  <div>
+    <span class="pill">9-category taxonomy</span>
+    <span class="pill">Bayesian belief tracker</span>
+    <span class="pill">Expected-Information-Gain planner</span>
+    <span class="pill">~$0.006 / diagnosis</span>
+  </div>
+
+  <h2>Demo 1 &nbsp;·&nbsp; Four failures, four diagnoses</h2>
+  <div class="grid">
+
+    <div class="card">
+      <div class="repo">nerdwalletoss/shepherd</div>
+      <div class="cat"><span class="badge b-config">CONFIG_ERROR</span><span class="conf">99%</span></div>
+      <div class="fix"><b>Edit <code>release.yml</code>:</b> semantic-release cannot push the version
+        tag — configure the Git credentials / token so it has push permission.</div>
+      <div class="tools">investigation: <code>deep_log</code> &rarr; <code>inspect_workflow_file</code></div>
+    </div>
+
+    <div class="card">
+      <div class="repo">sobhe/hazm</div>
+      <div class="cat"><span class="badge b-quality">QUALITY_VIOLATION</span><span class="conf">69%</span></div>
+      <div class="fix"><b>Fix lint at <code>word_tokenizer.py:294</code>:</b> ruff <code>E701</code>
+        (multiple statements on one line) — split the line. Retry will not help.</div>
+      <div class="tools">investigation: <code>deep_log</code></div>
+    </div>
+
+    <div class="card">
+      <div class="repo">microsoft/graspologic</div>
+      <div class="cat"><span class="badge b-code">CODE_REGRESSION</span><span class="conf">95%</span></div>
+      <div class="fix"><b>Fix <code>plot.py</code>:</b> <code>Ellipse.__init__()</code> is called with
+        5 positional args but accepts 4 (matplotlib API change) — correct the call.</div>
+      <div class="tools">investigation: <code>deep_log</code></div>
+    </div>
+
+    <div class="card">
+      <div class="repo">brooooooklyn/image</div>
+      <div class="cat"><span class="badge b-code">CODE_REGRESSION</span><span class="conf">96%</span></div>
+      <div class="fix"><b>Fix the Rust binding:</b> a type mismatch introduced by the
+        <code>mozjpeg-sys</code> v2 bump — update the affected signature in
+        <code>packages/binding</code>.</div>
+      <div class="tools">investigation: <code>deep_log</code></div>
+    </div>
+
+  </div>
+
+  <h2>Demo 2 &nbsp;·&nbsp; Inside one investigation <span style="color:var(--muted);font-size:14px;font-weight:400">(nerdwalletoss/shepherd)</span></h2>
+  <div class="trace">
+
+    <div class="row">
+      <div class="stage">prior<small>before any evidence</small></div>
+      <div class="detail">Belief seeded from corpus base rates — diffuse, no winner yet.</div>
+      <div class="belief"><div class="top">CODE_REGRESSION 55%</div><div class="bar"><i style="width:55%;background:var(--code)"></i></div></div>
+    </div>
+
+    <div class="row">
+      <div class="stage">deep&nbsp;log<small>mandatory step</small></div>
+      <div class="detail">Full failure excerpt + signals reviewed (semantic-refined, 112/180 lines).</div>
+      <div class="belief"><div class="top">still uncertain</div><div class="bar"><i style="width:48%;background:var(--code)"></i></div></div>
+    </div>
+
+    <div class="row">
+      <div class="stage">planner&nbsp;·&nbsp;step 1<small>EIG ranking</small></div>
+      <div class="detail"><code>inspect_workflow_file = 0.222 bits</code> &nbsp;·&nbsp;
+        dependency = 0.000 &nbsp;·&nbsp; runner = 0.000 &nbsp;&rarr;&nbsp; pick the workflow inspector.</div>
+      <div class="belief"><div class="top">highest expected gain</div></div>
+    </div>
+
+    <div class="row win">
+      <div class="stage">inspect&nbsp;workflow<small>evidence gathered</small></div>
+      <div class="detail">2 workflow files read · 3 action pins · 3 deprecated &nbsp;&rarr;&nbsp; the failure is in the workflow config.</div>
+      <div class="belief"><div class="top" style="color:var(--config)">CONFIG_ERROR 99%</div><div class="bar"><i style="width:99%;background:var(--config)"></i></div></div>
+    </div>
+
+    <div class="row">
+      <div class="stage">planner&nbsp;·&nbsp;step 2<small>stop condition</small></div>
+      <div class="detail">Expected information gain of every remaining tool &asymp; 0 &nbsp;&rarr;&nbsp; stop and classify.</div>
+      <div class="belief"><div class="top">converged</div></div>
+    </div>
+
+    <div class="row win">
+      <div class="stage">diagnosis<small>final</small></div>
+      <div class="detail">Belief went from diffuse to concentrated in <b>one informed step</b>.</div>
+      <div class="belief"><div class="top" style="color:var(--config)"><b>CONFIG_ERROR 99%</b></div></div>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    <div class="kpis">
+      <div><b>66%</b> macro vs <b>37%</b> rule-based</div>
+      <div><b>80%</b> with retrieval (40 rescues, 0 regressions)</div>
+      <div><b>~$0.006</b> per diagnosis</div>
+    </div>
+    <p style="margin-top:14px">Framework: <a href="https://github.com/alaaabdelnassermostafa-cmd/rpa-apa-ci-diagnosis">github.com/alaaabdelnassermostafa-cmd/rpa-apa-ci-diagnosis</a>
+       &nbsp;·&nbsp; <code>python -m apa diagnose "&lt;repo&gt;"</code></p>
+  </div>
+
+</div>
+</body>
+</html>
