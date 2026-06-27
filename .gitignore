@@ -1,0 +1,27 @@
+# ── secrets ──────────────────────────────────────────────
+.env
+*.key
+*token*
+# ── third-party data (GHALogs is NOT redistributable) ────
+data/
+gha_data/
+audit_logs/
+streaming_cases_10/
+comparison_results/
+batch_excerpts/
+hard_case_excerpts/
+case_studies/
+chroma_*/
+*.jsonl
+*.jsonl.gz
+*.json.gz
+*.log
+# ── build / env ──────────────────────────────────────────
+__pycache__/
+*.pyc
+*.venv/
+thesis_venv/
+.vscode-server/
+.antigravity-server/
+.codex/
+node_modules/
